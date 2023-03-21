@@ -34,4 +34,5 @@ This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/Augmented
     - [ ] has Cards toggle
     - [ ] has Achievements toggle
     - [ ] Tags selection
+    - [ ] Currency Change
 - [ ] Support for official steam wishlist data json
