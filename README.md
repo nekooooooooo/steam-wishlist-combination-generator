@@ -49,4 +49,7 @@ I will create a selection for both when I implement GUI
     - [ ] Currency Change
     - [ ] Exclusions
 - [ ] Display all games from wishlist
+- [ ] Edit output
+    - [ ] Add/Remove Games
+    - [ ] Generate list with remaining funds
 - [ ] Support for official steam wishlist data json
