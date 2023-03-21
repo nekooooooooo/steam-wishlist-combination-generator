@@ -11,6 +11,7 @@ This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/Augmented
 ## Setup and Usage
 
 - Install [Augmented Steam](https://augmentedsteam.com/)
+
 [![Chrome download link](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/augmented-steam/dnhpnfgdlenaccegplpojghhmaamnnfp) [![Firefox download link](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/augmented-steam/)
 - Export your wishlist to a json file named `wishlist.json`
 - Clone this repository
