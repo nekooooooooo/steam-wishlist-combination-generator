@@ -16,8 +16,20 @@ This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/Augmented
 - Export your wishlist to a json file named `wishlist.json`
 - Clone this repository
 - Place `wishlist.json` inside `../steam-wishlist-combination`
-- Optionally, change currency inside the code, line 6 `CURRENCY = "<currency>"` (will create a config for this maybe) currently it's in my currency but it should work still
 - Run script
+
+## Optional variables:
+
+Optionally, change currency inside the code, line 6 `CURRENCY = "<currency>"`, currently it's in my currency but it should work still
+```py
+CURRENCY = "<currency>"
+```
+and exclusions in line 106
+```py
+# exclusions = ['app/397540', 'app/349040']
+exclusions = []
+```
+I will create a selection for both when I implement GUI
 
 ## Credits
 - IsThereAnyDeal for Augmented Steam
@@ -36,4 +48,5 @@ This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/Augmented
     - [ ] Tags selection
     - [ ] Currency Change
     - [ ] Exclusions
+- [ ] Display all games from wishlist
 - [ ] Support for official steam wishlist data json
