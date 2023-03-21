@@ -91,7 +91,7 @@ def print_combination(combo, total_price, num_combinations):
 def main():
     # Load wishlist data from JSON file
     print("Getting wishlist.json")
-    with open("wishlist (1).json", encoding="utf-8") as f:
+    with open("wishlist.json", encoding="utf-8") as f:
         print("wishlist.json loaded")
         data = json.load(f)
 
