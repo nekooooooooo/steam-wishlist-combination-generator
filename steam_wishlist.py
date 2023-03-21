@@ -3,6 +3,8 @@ import json
 import random
 import os
 
+CURRENCY = "PHP"
+
 def random_combination(games, budget, min_spend=0):
     """
     Generate a random combination of games that can be bought within the budget and with a minimum spend of min_spend.
@@ -76,20 +78,32 @@ def get_input(prompt, type_=None, min_=None, max_=None):
     an appropriate error message. If the input is valid, it returns the validated user input.
     """
 
-def main():
+def print_combination(combo, total_price, num_combinations):
+        # Display the games in each combination with their prices and discounts
+        print("-" * 97) 
+        print(f"{'Game':<65} {'Discount'} {'Price':>10}")
+        print("=" * 97)
+        for item in combo:
+            print(f"{item[0]:<67} {f'-{item[2]}%':<9} {CURRENCY}{item[1]:>10,.2f}")
+        print("-" * 97) 
+        print(f"{'Total price:':<77} {CURRENCY}{total_price:>10,.2f}\n")
 
+def main():
     # Load wishlist data from JSON file
     print("Getting wishlist.json")
     with open("wishlist (1).json", encoding="utf-8") as f:
         print("wishlist.json loaded")
         data = json.load(f)
 
+    print(f"Currency: {CURRENCY}")
+
     # Get user inputs for budget, minimum spend, max game price, and number of combinations
     budget = get_input("Enter your budget: ", float, min_=1)
     min_spend = get_input("Enter your minimum spend: ", float, min_=1, max_=budget)
     max_game_price = get_input("Enter max game price: ", int, min_=1, max_=budget)
     num_combinations = get_input("Enter the number of combinations to generate (up to 5): ", int, min_=1, max_=100) 
-    exclusions = ['app/397540', 'app/349040']
+    # exclusions = ['app/397540', 'app/349040']
+    exclusions = []
 
     # Filter games from wishlist data based on budget and criteria for games
     games = [
@@ -106,20 +120,12 @@ def main():
     while True:
         # Clear console and generate random game combinations based on user inputs
         os.system('cls')
-        print(f"\nGenerating random combination that can be bought within PHP {budget} with at least PHP {min_spend} spent:\n")
+        print(f"\nGenerating random combination that can be bought within {CURRENCY} {budget} with at least {CURRENCY} {min_spend} spent:\n")
         for i in range(num_combinations):
             combo, total_price = random_combination(games, budget, min_spend)
             if num_combinations != 1:
                 print(f"Combination {i + 1}")
-
-            # Display the games in each combination with their prices and discounts
-            print("-" * 97) 
-            print(f"{'Game':<65} {'Discount'} {'Price':>10}")
-            print("=" * 97)
-            for item in combo:
-                print(f"{item[0]:<67} {f'-{item[2]}%':<9} PHP {item[1]:>10,.2f}")
-            print("-" * 97) 
-            print(f"{'Total price:':<77} PHP {total_price:>10,.2f}\n")
+            print_combination(combo, total_price, num_combinations)
 
         # Prompt user to generate more combinations or exit the program
         print(f"\nPress any key to generate {num_combinations} {'combinations' if num_combinations != 1 else 'combination'} again, or")
