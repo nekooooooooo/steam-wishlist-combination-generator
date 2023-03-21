@@ -16,6 +16,7 @@ This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/Augmented
 - Export your wishlist to a json file named `wishlist.json`
 - Clone this repository
 - Place `wishlist.json` inside `../steam-wishlist-combination`
+- Optionally, change currency inside the code (will create a config for this maybe) currently it's in my currency but it should work still
 - Run script
 
 ## Credits
