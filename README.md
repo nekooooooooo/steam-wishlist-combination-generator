@@ -55,3 +55,4 @@ I will create a selection for both when I implement GUI
 - [ ] Support for official steam wishlist data json
     - [ ] Steam URL/SteamID/Vanity Url
 - [ ] Executable release
+- [ ] CLI release
