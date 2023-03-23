@@ -1,82 +1,11 @@
 import time
 import json
-import random
 import os
+from utils.item_filters import has_price, within_budget, under_max_price, has_discount, get_price, is_game
+from utils.combinations import random_combination
+from utils.input import get_input
 
 CURRENCY = "PHP"
-
-def random_combination(games, budget, min_spend=0):
-    """
-    Generate a random combination of games that can be bought within the budget and with a minimum spend of min_spend.
-    :param games: list of tuples, where each tuple represents a game title, its price, and discount
-    :param budget: float, maximum amount that can be spent
-    :param min_spend: float, minimum amount that must be spent
-    :return: tuple, where the first element is a list of tuples representing the selected games and their prices, and 
-             the second element is the total price of the combination
-    """
-    
-    # Loop until a valid combination is generated
-    while True:
-        # Select a random number of games from the list
-        combo = random.sample(games, random.randint(1, len(games)))
-        
-        # Calculate the total price of the combination
-        total_price = sum(item['price'] for item in combo)
-        
-        # Check if the total price is within the budget and meets the minimum spend requirement
-        if min_spend <= total_price <= budget:
-            break
-
-    return combo, total_price
-
-def has_price(item):
-    return item['price']
-
-def within_budget(item, budget):
-    return item['price'] < budget * 100
-
-def under_max_price(item, max_price):
-    return item['price'] < max_price * 100
-
-def has_discount(item):
-    return item['discount']
-
-def get_price(item):
-    return item['price'] / 100.0
-
-def is_game(item):
-    return item['type'] == "Game"
-
-def get_input(prompt, type_=None, min_=None, max_=None):
-    """
-    A function that prompts the user for an input and validates it based on the specified type, minimum and maximum values.
-    If the input is invalid, it will raise a ValueError with an appropriate error message.
-    
-    Args:
-    - prompt: A string that serves as the prompt for the user input.
-    - type_: A type that the user input will be casted into.
-    - min_: A number that specifies the minimum allowable value for the user input.
-    - max_: A number that specifies the maximum allowable value for the user input.
-    
-    Returns:
-    - value: The validated user input.
-    """
-    while True:
-        try:
-            value = type_(input(prompt))
-            if min_ is not None and value < min_:
-                raise ValueError(f"{prompt} cannot be less than {min_}")
-            if max_ is not None and value > max_:
-                raise ValueError(f"{prompt} cannot be greater than {max_}")
-            return value
-        except ValueError as e:
-            print(f"Invalid input: {e}\n")
-    """
-    A while loop that continues to prompt the user for an input until a valid input is given.
-    A try-except block that attempts to cast the user input into the specified type, and validates the input
-    based on the minimum and maximum allowable values. If the input is invalid, it raises a ValueError with
-    an appropriate error message. If the input is valid, it returns the validated user input.
-    """
 
 def print_combination(combo, total_price):
     # Display the games in each combination with their prices and discounts
