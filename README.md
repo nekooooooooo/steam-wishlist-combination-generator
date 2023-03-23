@@ -54,3 +54,5 @@ I will create a selection for both when I implement GUI
     - [ ] Generate list with remaining funds
 - [ ] Support for official steam wishlist data json
     - [ ] Steam URL/SteamID/Vanity Url
+- [ ] Executable release
+- [ ] CLI release
