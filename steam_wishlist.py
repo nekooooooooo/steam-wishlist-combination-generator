@@ -21,7 +21,7 @@ def random_combination(games, budget, min_spend=0):
         combo = random.sample(games, random.randint(1, len(games)))
         
         # Calculate the total price of the combination
-        total_price = sum(item[1] for item in combo)
+        total_price = sum(item['price'] for item in combo)
         
         # Check if the total price is within the budget and meets the minimum spend requirement
         if min_spend <= total_price <= budget:
@@ -78,15 +78,18 @@ def get_input(prompt, type_=None, min_=None, max_=None):
     an appropriate error message. If the input is valid, it returns the validated user input.
     """
 
-def print_combination(combo, total_price, num_combinations):
-        # Display the games in each combination with their prices and discounts
-        print("-" * 97) 
-        print(f"{'Game':<65} {'Discount'} {'Price':>10}")
-        print("=" * 97)
-        for item in combo:
-            print(f"{item[0]:<67} {f'-{item[2]}%':<9} {CURRENCY}{item[1]:>10,.2f}")
-        print("-" * 97) 
-        print(f"{'Total price:':<77} {CURRENCY}{total_price:>10,.2f}\n")
+def print_combination(combo, total_price):
+    # Display the games in each combination with their prices and discounts
+    print("-" * 97) 
+    print(f"{'Game':<65} {'Discount'} {'Price':>10}")
+    print("=" * 97)
+    for item in combo:
+        title = item['title']
+        discount = item['discount']
+        price = item['price']
+        print(f"{title:<67} {f'-{discount}%':<9} {CURRENCY}{price:>10,.2f}")
+    print("-" * 97) 
+    print(f"{'Total price:':<77} {CURRENCY}{total_price:>10,.2f}\n")
 
 def main():
     # Load wishlist data from JSON file
@@ -107,7 +110,11 @@ def main():
 
     # Filter games from wishlist data based on budget and criteria for games
     games = [
-        (item["title"], get_price(item), item['discount'])
+        {
+            'title': item["title"], 
+            'price': get_price(item), 
+            'discount': item['discount']
+        }
         for item in data["data"]
         if has_price(item) and
         within_budget(item, budget) and
@@ -125,7 +132,7 @@ def main():
             combo, total_price = random_combination(games, budget, min_spend)
             if num_combinations != 1:
                 print(f"Combination {i + 1}")
-            print_combination(combo, total_price, num_combinations)
+            print_combination(combo, total_price)
 
         # Prompt user to generate more combinations or exit the program
         print(f"\nPress any key to generate {num_combinations} {'combinations' if num_combinations != 1 else 'combination'} again, or")
