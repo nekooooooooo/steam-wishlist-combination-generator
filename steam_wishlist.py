@@ -1,9 +1,9 @@
 import time
-import json
 import os
 from utils.item_filters import has_price, within_budget, under_max_price, has_discount, get_price, is_game
 from utils.combinations import random_combination
 from utils.input import get_input
+from utils.wishlist_data import get_wishlist_from_steam, get_wishlist_from_file
 
 CURRENCY = "PHP"
 
@@ -21,11 +21,29 @@ def print_combination(combo, total_price):
     print(f"{'Total price:':<77} {CURRENCY}{total_price:>10,.2f}\n")
 
 def main():
-    # Load wishlist data from JSON file
-    print("Getting wishlist.json")
-    with open("wishlist.json", encoding="utf-8") as f:
-        print("wishlist.json loaded")
-        data = json.load(f)
+
+    print("Please choose an option:")
+    print("[1] Use File")
+    print("[2] Use Steam ID/Steam URL")
+    option = input("Enter your choice (1 or 2): ")
+    while True:
+        if option == "1":
+            # Load wishlist from file
+            data = get_wishlist_from_file("wishlist.json")
+            break
+        elif option == "2":
+            # Load wishlist data from steam
+            while True:
+                input_id = input("Enter steam id: ")
+                data = get_wishlist_from_steam(input_id)
+                if data['data']:
+                    break
+                else:
+                    print(f"Sorry, the specified ID could not be found: {input_id}")
+            break
+        else:
+            print("Invalid option. Please enter 1 or 2.")
+    
 
     print(f"Currency: {CURRENCY}")
 
@@ -48,7 +66,7 @@ def main():
         if has_price(item) and
         within_budget(item, budget) and
         under_max_price(item, max_game_price) and
-        has_discount(item) and
+        # has_discount(item) and
         is_game(item) and
         item['gameid'][1] not in exclusions
     ]

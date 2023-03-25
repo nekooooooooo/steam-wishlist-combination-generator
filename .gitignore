@@ -2,3 +2,4 @@ tempCodeRunnerFile.python
 testcode.py
 .vscode
 *.json
+__pycache__
