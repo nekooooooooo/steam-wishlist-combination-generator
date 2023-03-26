@@ -25,8 +25,8 @@ def main():
     print("Please choose an option:")
     print("[1] Use File")
     print("[2] Use Steam ID/Steam URL")
-    option = input("Enter your choice (1 or 2): ")
     while True:
+        option = input("Enter your choice (1 or 2): ")
         if option == "1":
             # Load wishlist from file
             data = get_wishlist_from_file("wishlist.json")
