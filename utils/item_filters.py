@@ -15,3 +15,6 @@ def get_price(item):
 
 def is_game(item):
     return item['type'] == "Game"
+
+def is_excluded(item, exclusions):
+    return item['gameid'][1] in exclusions

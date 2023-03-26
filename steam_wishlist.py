@@ -1,11 +1,25 @@
 import time
 import os
-from utils.item_filters import has_price, within_budget, under_max_price, has_discount, get_price, is_game
+from utils.item_filters import has_price, within_budget, under_max_price, has_discount, get_price, is_game, is_excluded
 from utils.combinations import random_combination
 from utils.input import get_input
 from utils.wishlist_data import get_wishlist_from_steam, get_wishlist_from_file
 
 CURRENCY = "PHP"
+
+
+def filter_games(data, budget, max_game_price, exclusions, discount_only=False):
+    games = [{
+        'title': item['title'],
+        'price': get_price(item),
+        'discount': item['discount']
+    } for item in data['data'] if has_price(item) and
+        within_budget(item, budget) and
+        under_max_price(item, max_game_price) and
+        (not discount_only or has_discount(item)) and
+        is_game(item) and
+        not is_excluded(item, exclusions)]
+    return games
 
 
 def print_combination(combo, total_price):
@@ -53,24 +67,12 @@ def main():
     min_spend = get_input("Enter your minimum spend: ",float, min_=1, max_=budget)
     max_game_price = get_input("Enter max game price: ", int, min_=1, max_=budget)
     num_combinations = get_input("Enter the number of combinations to generate (up to 5): ", int, min_=1, max_=100)
+    discount_only = input("Only discounted games? (Y/N): ").lower() == "y"
     # exclusions = ['app/397540', 'app/349040']
     exclusions = []
 
     # Filter games from wishlist data based on budget and criteria for games
-    games = [
-        {
-            'title': item["title"],
-            'price': get_price(item),
-            'discount': item['discount']
-        }
-        for item in data["data"]
-        if has_price(item) and
-        within_budget(item, budget) and
-        under_max_price(item, max_game_price) and
-        # has_discount(item) and
-        is_game(item) and
-        item['gameid'][1] not in exclusions
-    ]
+    games = filter_games(data, budget, max_game_price, exclusions, discount_only)
 
     while True:
         # Clear console and generate random game combinations based on user inputs
