@@ -9,7 +9,10 @@ A simple, unoptimized python script that helps me decide which games to buy from
 This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/AugmentedSteam) wishlist export to json function.
 
 ## Setup and Usage
+- Clone this repository
+- Run script
 
+Optionally
 - Install [Augmented Steam](https://augmentedsteam.com/)
 
 [![Chrome download link](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/augmented-steam/dnhpnfgdlenaccegplpojghhmaamnnfp) [![Firefox download link](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/augmented-steam/)
@@ -41,7 +44,7 @@ games = [
         if has_price(item) and
         within_budget(item, budget) and
         under_max_price(item, max_game_price) and
-        # has_discount(item) and <--- can comment this out
+        # has_discount(item) and <--- can comment this out, will make this toggleable when I implement GUI
         is_game(item) and
         item['gameid'][1] not in exclusions
     ]
@@ -69,7 +72,7 @@ I will create a selection for both when I implement GUI
 - [ ] Edit output
     - [ ] Add/Remove Games
     - [ ] Generate list with remaining funds
-- [ ] Support for official steam wishlist data json
-    - [ ] Steam URL/SteamID/Vanity Url
+- [x] Support for official steam wishlist data json
+    - [x] Steam URL/SteamID/Vanity Url
 - [ ] Executable release
 - [ ] CLI release
