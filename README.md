@@ -32,23 +32,6 @@ and exclusions in line 106
 # exclusions = ['app/397540', 'app/349040']
 exclusions = []
 ```
-
-```py
-games = [
-        {
-            'title': item["title"], 
-            'price': get_price(item), 
-            'discount': item['discount']
-        }
-        for item in data["data"]
-        if has_price(item) and
-        within_budget(item, budget) and
-        under_max_price(item, max_game_price) and
-        # has_discount(item) and <--- can comment this out, will make this toggleable when I implement GUI
-        is_game(item) and
-        item['gameid'][1] not in exclusions
-    ]
-```
 I will create a selection for both when I implement GUI
 
 ## Credits
