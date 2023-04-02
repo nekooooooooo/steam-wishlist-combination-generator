@@ -23,7 +23,7 @@ Optionally
 
 ## Optional variables:
 
-Optionally, change currency inside the code, line 6 `CURRENCY = "<currency>"`, currently it's in my currency but it should work still
+Optionally, change currency inside the utils/constants.py, line 3 `CURRENCY = "<currency>"`, currently it's in my currency but it should work still
 ```py
 CURRENCY = "<currency>"
 ```
