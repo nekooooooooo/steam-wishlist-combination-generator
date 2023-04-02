@@ -1,40 +1,10 @@
 import time
 import os
-from utils.item_filters import has_price, within_budget, under_max_price, has_discount, get_price, is_game, is_excluded
-from utils.combinations import random_combination
+from utils.item_filters import filter_games
+from utils.combinations import random_combination, print_combination
 from utils.input import get_input
 from utils.wishlist_data import get_wishlist_from_steam, get_wishlist_from_file
-
-CURRENCY = "PHP"
-
-
-def filter_games(data, budget, max_game_price, exclusions, discount_only=False):
-    games = [{
-        'title': item['title'],
-        'price': get_price(item),
-        'discount': item['discount']
-    } for item in data['data'] if has_price(item) and
-        within_budget(item, budget) and
-        under_max_price(item, max_game_price) and
-        (not discount_only or has_discount(item)) and
-        is_game(item) and
-        not is_excluded(item, exclusions)]
-    return games
-
-
-def print_combination(combo, total_price):
-    # Display the games in each combination with their prices and discounts
-    print("-" * 97)
-    print(f"{'Game':<65} {'Discount'} {'Price':>10}")
-    print("=" * 97)
-    for item in combo:
-        title = item['title']
-        discount = item['discount']
-        price = item['price']
-        print(f"{title:<67} {f'-{discount}%':<9} {CURRENCY}{price:>10,.2f}")
-    print("-" * 97)
-    print(f"{'Total price:':<77} {CURRENCY}{total_price:>10,.2f}\n")
-
+from utils.constants import CURRENCY
 
 def main():
 
@@ -60,7 +30,7 @@ def main():
 
         print("Invalid option. Please enter 1 or 2.")
 
-    print(f"Currency: {CURRENCY}")
+    # print(f"Currency: {CURRENCY}")
 
     # Get user inputs for budget, minimum spend, max game price, and number of combinations
     budget = get_input("Enter your budget: ", float, min_=1)
@@ -94,6 +64,6 @@ def main():
 
 
 if __name__ == "__main__":
-    start_time = time.time()
+    # start_time = time.time()
     main()
-    print("%s seconds" % (time.time() - start_time))
+    # print("%s seconds" % (time.time() - start_time))
