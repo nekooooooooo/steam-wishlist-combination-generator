@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import tkinter as tk
+from tkinter import ttk
 from tktooltip import ToolTip
 from customtkinter import filedialog
 from tkinter import messagebox
@@ -12,15 +13,15 @@ from utils.constants import CURRENCY
 ctk.set_appearance_mode("system")  # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
-WIDTH = 800
-HEIGHT = 400
+MIN_WIDTH = 750
+MIN_HEIGHT = 600
 
 class MethodTab(ctk.CTkTabview):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.add("File")
         self.add("SteamID")
+        self.add("File")
         self.tab("File").grid_columnconfigure((0, 2), weight=0)
         self.tab("File").grid_columnconfigure(1, weight=1)
         self.tab("SteamID").grid_columnconfigure((0, 2), weight=0)
@@ -91,12 +92,24 @@ class InputsFrame(ctk.CTkFrame):
         else:
             return False
 
+class OutputsFrame(ctk.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+
+        self.table = ttk.Treeview(self, columns=['title', 'discount', 'price'], show='headings')
+
+        # Define the columns
+        self.table.heading('title', text='Title')
+        self.table.heading('price', text='Price')
+        self.table.heading('discount', text='Discount')
+
 
 class WishlistGeneratorUI(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Steam Wishlist Generator")
-        self.geometry(f"{WIDTH}x{HEIGHT}")
+        self.geometry(f"{MIN_WIDTH}x{MIN_HEIGHT}")
+        self.minsize(MIN_WIDTH, MIN_HEIGHT)
         # configure grid layout (4x4)
         self.grid_columnconfigure((0, 2), weight=0)
         self.grid_columnconfigure(1, weight=1)
@@ -110,7 +123,13 @@ class WishlistGeneratorUI(ctk.CTk):
         self.input_frame.grid(row=1, column=0, columnspan=5, padx=(10), pady=(10, 0), sticky="nsew")
 
         self.get_button = ctk.CTkButton(self, text="Get", command=self.get_wishlist_combo)
-        self.get_button.grid(row=5, column=0, columnspan=5, padx=10, pady=10, sticky="nsew")
+        self.get_button.grid(row=2, column=0, columnspan=5, padx=10, pady=10, sticky="nsew")
+
+        self.output_frame = OutputsFrame(master=self)
+        self.output_frame.grid(row=3, column=0, columnspan=5, padx=(10), pady=(10, 0), sticky="nsew")
+
+        self.total_label = ctk.CTkLabel(self, text="Total: ")
+        self.total_label.grid(row=4, column=0, padx=10, pady=0, sticky="ew")
 
         # self.theme_button = ctk.CTkButton(self, text="Toggle Theme", command=self.theme_toggle)
         # self.theme_button.grid(row=6, column=0, padx=10, pady=10)
@@ -148,10 +167,20 @@ class WishlistGeneratorUI(ctk.CTk):
             return messagebox.showerror("Input Error", "Minimum Spend or Max Price can't be more than budget!")
 
         games = filter_games(self.data, budget, max_game_price, format_exclusions, discount_only, game_only)
-
-        print(f"\nGenerating random combination that can be bought within {CURRENCY} {budget} with at least {CURRENCY} {min_spend} spent:\n")
         combo, total_price = random_combination(games, budget, min_spend)
-        print_combination(combo, total_price)
+
+        self.output_frame.table.delete(*self.output_frame.table.get_children())
+
+        for item in combo:
+            self.output_frame.table.insert('', 'end', values=(item['title'], f"{item['discount']}%", item['price'], ''))
+
+        self.output_frame.table.pack(fill='both', expand=True)
+        self.total_label.configure(text=f"Total: {total_price}")
+
+        # print(f"{title:<67} {f'-{discount}%':<9} {CURRENCY}{price:>10,.2f}")
+        # print(f"\nGenerating random combination that can be bought within {CURRENCY} {budget} with at least {CURRENCY} {min_spend} spent:\n")
+        # combo, total_price = random_combination(games, budget, min_spend)
+        # print_combination(combo, total_price)
 
     def format_app_ids(self, exclusions):
         return ['app/' + x.strip() for x in exclusions.split(',')]
