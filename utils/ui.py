@@ -147,7 +147,7 @@ class WishlistGeneratorUI(ctk.CTk):
         if min_spend > budget or max_game_price > budget:
             return messagebox.showerror("Input Error", "Minimum Spend or Max Price can't be more than budget!")
 
-        games = filter_games(self.data, budget, max_game_price, format_exclusions, discount_only)
+        games = filter_games(self.data, budget, max_game_price, format_exclusions, discount_only, game_only)
 
         print(f"\nGenerating random combination that can be bought within {CURRENCY} {budget} with at least {CURRENCY} {min_spend} spent:\n")
         combo, total_price = random_combination(games, budget, min_spend)
