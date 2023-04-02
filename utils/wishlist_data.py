@@ -2,9 +2,10 @@ from utils.constants import STEAM_WISHLIST_VANITY_URL, STEAM_WISHLIST_ID_URL
 import json
 import requests
 from urllib.parse import urlparse
+from tqdm import tqdm
 
-def get_wishlist_url(is_custom):
-    if is_custom:
+def get_wishlist_url(is_vanity):
+    if is_vanity:
         return STEAM_WISHLIST_VANITY_URL
     else:
         return STEAM_WISHLIST_ID_URL
@@ -18,10 +19,10 @@ def get_wishlist_from_file(file):
 
 def get_wishlist_from_steam(input_id):
     # Extract id from input
-    steam_id, is_custom = get_id(input_id)
+    steam_id, is_vanity = get_id(input_id)
 
     # Send GET request to Steam wishlist URL and get response content
-    wishlist_url = get_wishlist_url(is_custom)
+    wishlist_url = get_wishlist_url(is_vanity)
     
     # Get the first page of the wishlist data
     result = []
@@ -34,7 +35,7 @@ def get_wishlist_from_steam(input_id):
         if len(data) == 0 or data.get('success') == 2:
             break
         
-        for _, games in data.items():
+        for _, games in tqdm(data.items(), desc=f"Extracting wishlist data page {page_num + 1}"):
             if games['subs']:
                 # extract relevant data from the game data
                 app_id = f"app/{games['subs'][0]['id']}"
