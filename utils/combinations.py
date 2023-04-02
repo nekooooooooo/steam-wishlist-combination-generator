@@ -1,5 +1,5 @@
 import random
-from constants import CURRENCY
+from utils.constants import CURRENCY
 
 def random_combination(games, budget, min_spend=0):
     """
