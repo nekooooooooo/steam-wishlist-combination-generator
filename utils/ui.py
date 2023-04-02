@@ -12,7 +12,41 @@ ctk.set_appearance_mode("system")  # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 WIDTH = 800
-HEIGHT = 200
+HEIGHT = 400
+
+class MethodTab(ctk.CTkTabview):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+
+        self.add("File")
+        self.add("SteamID")
+        self.tab("File").grid_columnconfigure((0, 2), weight=0)
+        self.tab("File").grid_columnconfigure(1, weight=1)
+        self.tab("SteamID").grid_columnconfigure((0, 2), weight=0)
+        self.tab("SteamID").grid_columnconfigure(1, weight=1)
+
+        self.filepath_label = ctk.CTkLabel(self.tab("File"), text="File Path:")
+        self.filepath_label.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        
+        self.filepath_entry = ctk.CTkEntry(self.tab("File"))
+        self.filepath_entry.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+        
+        self.file_button = ctk.CTkButton(self.tab("File"), text="Select File", command=self.select_file)
+        self.file_button.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
+
+        self.steamid_label = ctk.CTkLabel(self.tab("SteamID"), text="SteamID:")
+        self.steamid_label.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+
+        self.steamid_entry = ctk.CTkEntry(self.tab("SteamID"))
+        self.steamid_entry.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
+    def select_file(self):
+        # Open a file dialog to select a file
+        filepath = filedialog.askopenfilename()
+        
+        # Update the file path entry widget with the selected file path
+        self.filepath_entry.delete(0, ctk.END)
+        self.filepath_entry.insert(0, filepath)
 
 class WishlistGeneratorUI(ctk.CTk):
     def __init__(self):
@@ -27,37 +61,21 @@ class WishlistGeneratorUI(ctk.CTk):
         self.theme_button = ctk.CTkButton(self, text="Toggle Theme", command=self.theme_toggle)
         self.theme_button.grid(row=3, column=0, padx=10, pady=10)
 
-        self.filepath_label = ctk.CTkLabel(self, text="File Path:")
-        self.filepath_label.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
-        
-        self.filepath_entry = ctk.CTkEntry(self)
-        self.filepath_entry.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
-        
-        self.file_button = ctk.CTkButton(self, text="Select File", command=self.select_file)
-        self.file_button.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
-
-        self.steamid_label = ctk.CTkLabel(self, text="SteamID:")
-        self.steamid_label.grid(row=1, column=0, columnspan=1, padx=10, pady=10, sticky="ew")
-
-        self.steamid_entry = ctk.CTkEntry(self)
-        self.steamid_entry.grid(row=1, column=1, columnspan=2, padx=10, pady=10, sticky="nsew")
+        self.method_tab = MethodTab(master=self, width=250, height=0)
+        self.method_tab.grid(row=0, column=0, columnspan=3, padx=(10), pady=(10, 0), sticky="nsew")
 
         self.get_button = ctk.CTkButton(self, text="Get", command=self.get_wishlist_from_id)
-        self.get_button.grid(row=2, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
-
-    def select_file(self):
-        # Open a file dialog to select a file
-        filepath = filedialog.askopenfilename()
-        
-        # Update the file path entry widget with the selected file path
-        self.filepath_entry.delete(0, ctk.END)
-        self.filepath_entry.insert(0, filepath)
+        self.get_button.grid(row=5, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
 
     def get_wishlist_from_id(self):
-        steamid = self.steamid_entry.get()
-        data = get_wishlist_from_steam(steamid)
-        if not data['data']:
-            messagebox.showerror("SteamID Error", f"Sorry, the specified ID could not be found: {steamid}")
+        if self.method_tab.get() == "File":
+            filepath = self.method_tab.filepath_entry.get()
+            data = get_wishlist_from_file(filepath)
+        else:
+            steamid = self.method_tab.steamid_entry.get()
+            data = get_wishlist_from_steam(steamid)
+            if not data['data']:
+                messagebox.showerror("SteamID Error", f"Sorry, the specified ID could not be found: {steamid}")
 
     def theme_toggle(self):
         appearance_mode = "light" if ctk.get_appearance_mode() == "Dark" else "dark"
