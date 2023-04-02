@@ -3,3 +3,4 @@ testcode.py
 .vscode
 *.json
 __pycache__
+old.py
