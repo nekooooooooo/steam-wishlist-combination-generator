@@ -35,10 +35,10 @@ def get_wishlist_from_steam(input_id):
         if len(data) == 0 or data.get('success') == 2:
             break
         
-        for _, games in tqdm(data.items(), desc=f"Extracting wishlist data page {page_num + 1}"):
+        for key, games in tqdm(data.items(), desc=f"Extracting wishlist data page {page_num + 1}"):
             if games['subs']:
                 # extract relevant data from the game data
-                app_id = f"app/{games['subs'][0]['id']}"
+                app_id = f"app/{key}"
                 title = games['name'].replace("'", "\'")
                 game_type = games['type']
                 price = games['subs'][0]['price']
@@ -50,7 +50,8 @@ def get_wishlist_from_steam(input_id):
                     "title": title,
                     "type": game_type,
                     "price": price,
-                    "discount": discount
+                    "discount": discount,
+                    "capsule": games['capsule']
                 }
 
                 # add it to the result list
