@@ -96,12 +96,23 @@ class OutputsFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.table = ttk.Treeview(self, columns=['title', 'discount', 'price'], show='headings')
+        self.style = ttk.Style()
+        self.style.configure("mystyle.Treeview", highlightthickness=0, bd=0)
+        self.style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})])
+
+        self.columns = ['title', 'discount', 'price']
+        self.output_tree = ttk.Treeview(self, columns=self.columns, show='headings', style="mystyle.Treeview")
+        self.output_tree.tag_configure('odd', background='#E8E8E8')
+        self.output_tree.tag_configure('even', background='#DFDFDF')
 
         # Define the columns
-        self.table.heading('title', text='Title')
-        self.table.heading('price', text='Price')
-        self.table.heading('discount', text='Discount')
+        self.output_tree.heading('title', text='Title')
+        self.output_tree.heading('discount', text='Discount', anchor="e")
+        self.output_tree.heading('price', text='Price', anchor="e")
+
+        self.output_tree.column("title", width=200)
+        self.output_tree.column("discount", width=25)
+        self.output_tree.column("price", width=30)
 
 
 class WishlistGeneratorUI(ctk.CTk):
@@ -169,12 +180,18 @@ class WishlistGeneratorUI(ctk.CTk):
         games = filter_games(self.data, budget, max_game_price, format_exclusions, discount_only, game_only)
         combo, total_price = random_combination(games, budget, min_spend)
 
-        self.output_frame.table.delete(*self.output_frame.table.get_children())
+        self.output_frame.output_tree.delete(*self.output_frame.output_tree.get_children())
 
-        for item in combo:
-            self.output_frame.table.insert('', 'end', values=(item['title'], f"{item['discount']}%", item['price'], ''))
+        for i, item in enumerate(combo):
+            tag = "even" if (i + 1) % 2 == 0 else "odd"
+            values = (
+                item['title'],
+                f"{item['discount']}%",
+                item['price']
+            )
+            self.output_frame.output_tree.insert('', 'end', values=values, tags=(tag,))
 
-        self.output_frame.table.pack(fill='both', expand=True)
+        self.output_frame.output_tree.pack(fill='both', expand=True)
         self.total_label.configure(text=f"Total: {total_price}")
 
         # print(f"{title:<67} {f'-{discount}%':<9} {CURRENCY}{price:>10,.2f}")
