@@ -19,7 +19,7 @@ def is_game(item):
 def is_excluded(item, exclusions):
     return item['gameid'][1] in exclusions
 
-def filter_games(data, budget, max_game_price, exclusions, discount_only=False):
+def filter_games(data, budget, max_game_price, exclusions, discount_only=False, game_only=False):
     games = [{
         'title': item['title'],
         'price': get_price(item),
@@ -28,6 +28,6 @@ def filter_games(data, budget, max_game_price, exclusions, discount_only=False):
         within_budget(item, budget) and
         under_max_price(item, max_game_price) and
         (not discount_only or has_discount(item)) and
-        is_game(item) and
+        (not game_only or is_game(item)) and
         not is_excluded(item, exclusions)]
     return games
