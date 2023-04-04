@@ -105,17 +105,19 @@ class OutputsFrame(ctk.CTkScrollableFrame):
         self.style.layout("wishlist.Treeview", [('wishlist.Treeview.treearea', {'sticky': 'nswe'})])
         self.style.map('wishlist.Treeview', background=[('selected', '#2463AA')])
 
-        self.columns = ['title', 'discount', 'price']
+        self.columns = ['appid', 'title', 'discount', 'price']
         self.output_tree = ttk.Treeview(self, columns=self.columns, show='tree', style="wishlist.Treeview")
         self.output_tree.tag_configure('odd', background='#212121')
         self.output_tree.tag_configure('even', background='#181818')
 
         # Define the columns
+        self.output_tree.heading('appid', text='AppID')
         self.output_tree.heading('title', text='Title')
         self.output_tree.heading('discount', text='Discount', anchor="e")
         self.output_tree.heading('price', text='Price', anchor="e")
 
         self.output_tree.column("#0", width=0, stretch="no")
+        self.output_tree.column("appid", width=75, anchor="center", stretch="no")
         self.output_tree.column("title", width=200)
         self.output_tree.column("discount", width=25, anchor="e")
         self.output_tree.column("price", width=30, anchor="e")
@@ -206,6 +208,7 @@ class WishlistGeneratorUI(ctk.CTk):
         for i, item in enumerate(combo):
             tag = "even" if (i + 1) % 2 == 0 else "odd"
             values = (
+                item['appid'],
                 item['title'],
                 f"{item['discount']}%",
                 item['price']

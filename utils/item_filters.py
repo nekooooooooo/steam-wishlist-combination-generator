@@ -21,6 +21,7 @@ def is_excluded(item, exclusions):
 
 def filter_games(data, budget, max_game_price, exclusions, discount_only=False, game_only=False):
     games = [{
+        'appid': item['gameid'][1].lstrip('app/'),
         'title': item['title'],
         'price': get_price(item),
         'discount': item['discount']
