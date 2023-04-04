@@ -133,7 +133,7 @@ class WishlistGeneratorUI(ctk.CTk):
         self.input_frame = InputsFrame(master=self)
         self.input_frame.grid(row=1, column=0, columnspan=5, padx=(10), pady=(10, 0), sticky="nsew")
 
-        self.get_button = ctk.CTkButton(self, text="Get", command=self.get_wishlist_combo)
+        self.get_button = ctk.CTkButton(self, text="Get", command=self.get_button_callback)
         self.get_button.grid(row=2, column=0, columnspan=5, padx=10, pady=10, sticky="nsew")
 
         self.output_frame = OutputsFrame(master=self)
@@ -141,11 +141,11 @@ class WishlistGeneratorUI(ctk.CTk):
 
         self.total_label = ctk.CTkLabel(self, text="Total: ")
         self.total_label.grid(row=4, column=0, padx=10, pady=0, sticky="ew")
-
+        
         # self.theme_button = ctk.CTkButton(self, text="Toggle Theme", command=self.theme_toggle)
         # self.theme_button.grid(row=6, column=0, padx=10, pady=10)
 
-    def get_wishlist_combo(self):
+    def get_button_callback(self):
         
         if not self.data:
             if self.method_tab.get() == "File":
