@@ -40,7 +40,6 @@ class MethodTab(ctk.CTkTabview):
         self.steamid_entry = ctk.CTkEntry(self.tab("SteamID"), placeholder_text="SteamID32, URL, or Custom URL")
         self.steamid_entry.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
 
-
     def select_file(self):
         # Open a file dialog to select a file
         filepath = filedialog.askopenfilename()
@@ -48,6 +47,7 @@ class MethodTab(ctk.CTkTabview):
         # Update the file path entry widget with the selected file path
         self.filepath_entry.delete(0, ctk.END)
         self.filepath_entry.insert(0, filepath)
+
 
 class InputsFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -83,12 +83,12 @@ class InputsFrame(ctk.CTkFrame):
         self.exclusions_entry = ctk.CTkEntry(self, placeholder_text="Use game app id, separate with comma")
         self.exclusions_entry.grid(row=4, column=0, columnspan=3, padx=10, pady=(0, 10), sticky="nsew")
     
-
     def callback(self, P):
         if str.isdigit(P) or P == "":
             return True
         else:
             return False
+
 
 class OutputsFrame(ctk.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
@@ -111,7 +111,7 @@ class OutputsFrame(ctk.CTkScrollableFrame):
         self.output_tree = ttk.Treeview(self, columns=self.columns, show='tree', style="wishlist.Treeview")
         self.output_tree.tag_configure('odd', background='#212121')
         self.output_tree.tag_configure('even', background='#181818')
-        ToolTip(self.output_tree, msg="Double click to open link", delay=0.5)   # True by default
+        ToolTip(self.output_tree, msg="Double click to open link\nRight click to add to exclusions", delay=1.0)   # True by default
 
         # Define the columns
         self.output_tree.heading('appid', text='AppID')
@@ -128,16 +128,17 @@ class OutputsFrame(ctk.CTkScrollableFrame):
         self.output_tree.column("url", width=0, stretch="no")
         
         self.output_tree.bind("<Double-1>", self.open_link)
-
         
     def open_link(self, event):
         item = self.output_tree.focus()
-        if item:
-            name = self.output_tree.item(item)['values'][1]
-            url = self.output_tree.item(item)['values'][4]
-            answer = messagebox.askyesno("Open Link", f"Do you want to open the link in a browser?\n{name}\n{url}")
-            if answer:
-                webbrowser.open(url)
+        if not item:
+            return
+
+        name = self.output_tree.item(item)['values'][1]
+        url = self.output_tree.item(item)['values'][4]
+        answer = messagebox.askyesno("Open Link", f"Do you want to open the link in a browser?\n{name}\n{url}")
+        if answer:
+            webbrowser.open(url)
 
 
 class WishlistGeneratorUI(ctk.CTk):
@@ -172,6 +173,18 @@ class WishlistGeneratorUI(ctk.CTk):
 
         # self.theme_button = ctk.CTkButton(self, text="Toggle Theme", command=self.theme_toggle)
         # self.theme_button.grid(row=6, column=0, padx=10, pady=10)
+
+        self.output_frame.output_tree.bind("<Button-3>", self.add_to_exclusions)
+
+    def add_to_exclusions(self, event):
+        item = self.output_frame.output_tree.identify_row(event.y)
+        if not item:
+            return
+            
+        appid = self.output_frame.output_tree.item(item)['values'][0]
+        exclusions = self.input_frame.exclusions_entry.get().replace(" ", "").split(",")
+        if str(appid) not in exclusions:
+            self.input_frame.exclusions_entry.insert(ctk.END, f"{appid}, ")
 
     def get_button_callback(self):
 
