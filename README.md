@@ -6,9 +6,6 @@ A simple, unoptimized python script that helps me decide which games to buy from
 
 ![](https://raw.githubusercontent.com/nekooooooooo/nekooooooooo.github.io/master/pics/preview_steam_wishlist_2.png)
 
-![](https://raw.githubusercontent.com/nekooooooooo/nekooooooooo.github.io/master/pics/preview_steam_wishlist.png)
-
-
 This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/AugmentedSteam) wishlist export to json function.
 
 ## Setup and Usage
