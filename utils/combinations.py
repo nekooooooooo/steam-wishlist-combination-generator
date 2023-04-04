@@ -10,9 +10,10 @@ def random_combination(games, budget, min_spend=0):
     :return: tuple, where the first element is a list of tuples representing the selected games and their prices, and 
              the second element is the total price of the combination
     """
-    
+    MAX_TRIES = 1000
+
     # Loop until a valid combination is generated
-    while True:
+    for i in range(MAX_TRIES):
         # Select a random number of games from the list
         combo = random.sample(games, random.randint(1, len(games)))
         
@@ -21,6 +22,10 @@ def random_combination(games, budget, min_spend=0):
         
         # Check if the total price is within the budget and meets the minimum spend requirement
         if min_spend <= total_price <= budget:
+            break
+
+        if i == MAX_TRIES - 1:
+            print("Error: No valid combination found.")
             break
 
     return combo, total_price

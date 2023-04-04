@@ -196,6 +196,9 @@ class WishlistGeneratorUI(ctk.CTk):
         games = filter_games(self.data, budget, max_game_price, format_exclusions, discount_only, game_only)
         combo, total_price = random_combination(games, budget, min_spend)
 
+        if total_price < min_spend:
+            return messagebox.showerror("Error", "No valid combination found!")
+
         tree = self.output_frame.output_tree
 
         tree.delete(*tree.get_children())
