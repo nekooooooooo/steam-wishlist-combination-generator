@@ -32,7 +32,7 @@ CURRENCY = "<currency>"
 ## To Do
 - [ ] Optimize code
 - [x] GUI using Tkinter, maybe (04/04/2023)
-    - [ ] Clickable links
+    - [x] Clickable links (04/04/2023)
     - [ ] Game Banner Preview
 - [ ] More options
     - [x] Is Game toggle (04/04/2023)
