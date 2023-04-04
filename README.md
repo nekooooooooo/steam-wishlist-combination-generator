@@ -4,22 +4,22 @@
 
 A simple, unoptimized python script that helps me decide which games to buy from my wishlist.
 
+![](https://raw.githubusercontent.com/nekooooooooo/nekooooooooo.github.io/master/pics/preview_steam_wishlist_2.png)
+
 ![](https://raw.githubusercontent.com/nekooooooooo/nekooooooooo.github.io/master/pics/preview_steam_wishlist.png)
+
 
 This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/AugmentedSteam) wishlist export to json function.
 
 ## Setup and Usage
 - Clone this repository
+- `pip install -r requirements.txt`
 - Run script
 
 Optionally
 - Install [Augmented Steam](https://augmentedsteam.com/)
-
-[![Chrome download link](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/augmented-steam/dnhpnfgdlenaccegplpojghhmaamnnfp) [![Firefox download link](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/augmented-steam/)
+    [![Chrome download link](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/augmented-steam/dnhpnfgdlenaccegplpojghhmaamnnfp) [![Firefox download link](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/augmented-steam/)
 - Export your wishlist to a json file named `wishlist.json`
-- Clone this repository
-- Place `wishlist.json` inside `/steam-wishlist-combination`
-- Run script
 
 ## Optional variables:
 
@@ -27,35 +27,31 @@ Optionally, change currency inside the utils/constants.py, line 3 `CURRENCY = "<
 ```py
 CURRENCY = "<currency>"
 ```
-and exclusions in line 106
-```py
-# exclusions = ['app/397540', 'app/349040']
-exclusions = []
-```
-I will create a selection for both when I implement GUI
 
 ## Credits
+- TomSchimansky for [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter)
 - IsThereAnyDeal for Augmented Steam
 
 ## To Do
 - [ ] Optimize code
-- [ ] GUI using Tkinter, maybe
+- [x] GUI using Tkinter, maybe (04/04/2023)
     - [ ] Clickable links
     - [ ] Game Banner Preview
 - [ ] More options
-    - [ ] Is Game toggle
-    - [ ] Is discounted toggle
+    - [x] Is Game toggle (04/04/2023)
+    - [x] Is discounted toggle (04/04/2023)
     - [ ] Discount minimum - maximum
     - [ ] has Cards toggle
     - [ ] has Achievements toggle
     - [ ] Tags selection
     - [ ] Currency Change
-    - [ ] Exclusions
+    - [x] Exclusions (04/04/2023)
 - [ ] Display all games from wishlist
 - [ ] Edit output
     - [ ] Add/Remove Games
     - [ ] Generate list with remaining funds
-- [x] Support for official steam wishlist data json
+- [x] Support for official steam wishlist data json (26/3/2023)
     - [x] Steam URL/SteamID/Vanity Url
+- [ ] Sort
 - [ ] Executable release
 - [ ] CLI release
