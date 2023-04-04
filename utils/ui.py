@@ -221,11 +221,6 @@ class WishlistGeneratorUI(ctk.CTk):
         tree.pack(fill='both', expand=True)
         self.total_label.configure(text=f"Total: {total_price:.2f}")
 
-        # print(f"{title:<67} {f'-{discount}%':<9} {CURRENCY}{price:>10,.2f}")
-        # print(f"\nGenerating random combination that can be bought within {CURRENCY} {budget} with at least {CURRENCY} {min_spend} spent:\n")
-        # combo, total_price = random_combination(games, budget, min_spend)
-        # print_combination(combo, total_price)
-
     def format_app_ids(self, exclusions):
         return ['app/' + x.strip() for x in exclusions.split(',')]
 
