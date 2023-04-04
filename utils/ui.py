@@ -1,14 +1,10 @@
 import customtkinter as ctk
-import tkinter as tk
 from tkinter import ttk
-from tktooltip import ToolTip
 from customtkinter import filedialog
 from tkinter import messagebox
 from utils.item_filters import filter_games
-from utils.combinations import random_combination, print_combination
-from utils.input import get_input
+from utils.combinations import random_combination
 from utils.wishlist_data import get_wishlist_from_steam, get_wishlist_from_file
-from utils.constants import CURRENCY
 
 ctk.set_appearance_mode("system")  # Modes: "System" (standard), "Dark", "Light"
 ctk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -92,27 +88,37 @@ class InputsFrame(ctk.CTkFrame):
         else:
             return False
 
-class OutputsFrame(ctk.CTkFrame):
+class OutputsFrame(ctk.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
         self.style = ttk.Style()
-        self.style.configure("mystyle.Treeview", highlightthickness=0, bd=0)
-        self.style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})])
+        self.style.theme_use("default")
+        self.style.configure("wishlist.Treeview", 
+            highlightthickness=0, 
+            bd=0, 
+            rowheight=35,
+            fieldbackground="#212121",
+            background="#212121",
+            foreground="white"
+            )
+        self.style.layout("wishlist.Treeview", [('wishlist.Treeview.treearea', {'sticky': 'nswe'})])
+        self.style.map('wishlist.Treeview', background=[('selected', '#2463AA')])
 
         self.columns = ['title', 'discount', 'price']
-        self.output_tree = ttk.Treeview(self, columns=self.columns, show='headings', style="mystyle.Treeview")
-        self.output_tree.tag_configure('odd', background='#E8E8E8')
-        self.output_tree.tag_configure('even', background='#DFDFDF')
+        self.output_tree = ttk.Treeview(self, columns=self.columns, show='tree', style="wishlist.Treeview")
+        self.output_tree.tag_configure('odd', background='#212121')
+        self.output_tree.tag_configure('even', background='#181818')
 
         # Define the columns
         self.output_tree.heading('title', text='Title')
         self.output_tree.heading('discount', text='Discount', anchor="e")
         self.output_tree.heading('price', text='Price', anchor="e")
 
+        self.output_tree.column("#0", width=0, stretch="no")
         self.output_tree.column("title", width=200)
-        self.output_tree.column("discount", width=25)
-        self.output_tree.column("price", width=30)
+        self.output_tree.column("discount", width=25, anchor="e")
+        self.output_tree.column("price", width=30, anchor="e")
 
 
 class WishlistGeneratorUI(ctk.CTk):
@@ -125,41 +131,49 @@ class WishlistGeneratorUI(ctk.CTk):
         self.grid_columnconfigure((0, 2), weight=0)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure((0, 1, 2), weight=0)
+        self.grid_rowconfigure(3, weight=1)
+
+        self.temp = ""
         self.data = []
 
-        self.method_tab = MethodTab(master=self, width=250, height=0)
+        self.method_tab = MethodTab(self, width=250, height=0)
         self.method_tab.grid(row=0, column=0, columnspan=5, padx=(10), pady=(10, 0), sticky="nsew")
 
-        self.input_frame = InputsFrame(master=self)
+        self.input_frame = InputsFrame(self)
         self.input_frame.grid(row=1, column=0, columnspan=5, padx=(10), pady=(10, 0), sticky="nsew")
 
         self.get_button = ctk.CTkButton(self, text="Get", command=self.get_button_callback)
         self.get_button.grid(row=2, column=0, columnspan=5, padx=10, pady=10, sticky="nsew")
 
-        self.output_frame = OutputsFrame(master=self)
+        self.output_frame = OutputsFrame(self, border_width=0)
         self.output_frame.grid(row=3, column=0, columnspan=5, padx=(10), pady=(10, 0), sticky="nsew")
 
-        self.total_label = ctk.CTkLabel(self, text="Total: ")
-        self.total_label.grid(row=4, column=0, padx=10, pady=0, sticky="ew")
-        
+        self.total_label = ctk.CTkLabel(self, text="Total: ", anchor="e")
+        self.total_label.grid(row=4, column=4, padx=10, pady=0, sticky="ew")
+
         # self.theme_button = ctk.CTkButton(self, text="Toggle Theme", command=self.theme_toggle)
         # self.theme_button.grid(row=6, column=0, padx=10, pady=10)
 
     def get_button_callback(self):
-        
-        if not self.data:
-            if self.method_tab.get() == "File":
-                filepath = self.method_tab.filepath_entry.get()
-                self.data = get_wishlist_from_file(filepath)
-            else:
-                steamid = self.method_tab.steamid_entry.get()
-                self.data = get_wishlist_from_steam(steamid)
-                if not self.data['data']:
-                    messagebox.showerror("SteamID Error", f"Sorry, the specified ID could not be found: {steamid}")
 
-        budget = int(self.input_frame.budget_entry.get())
-        min_spend = int(self.input_frame.minimum_entry.get())
-        max_game_price = int(self.input_frame.max_price_entry.get())
+        if self.method_tab.get() == "File":
+            entry = self.method_tab.filepath_entry
+        else:
+            entry = self.method_tab.steamid_entry
+
+        if not self.data or self.temp != entry.get():
+            if self.method_tab.get() == "File":
+                self.data = get_wishlist_from_file(entry.get())
+            else:
+                self.data = get_wishlist_from_steam(entry.get())
+            self.temp = entry.get()
+            if not self.data['data']:
+                self.data = []
+                messagebox.showerror("SteamID Error", f"Sorry, the specified ID could not be found: {entry.get()}")
+
+        budget = self.input_frame.budget_entry.get()
+        min_spend = self.input_frame.minimum_entry.get()
+        max_game_price = self.input_frame.max_price_entry.get()
         game_only = bool(self.input_frame.game_only_switch.get())
         discount_only = bool(self.input_frame.discount_only_switch.get())
         exclusions = self.input_frame.exclusions_entry.get()
@@ -174,13 +188,17 @@ class WishlistGeneratorUI(ctk.CTk):
         if not max_game_price:
             return messagebox.showerror("Input Error", "Max Price can't be empty!")
 
+        budget, min_spend, max_game_price = map(int, [budget, min_spend, max_game_price])
+
         if min_spend > budget or max_game_price > budget:
             return messagebox.showerror("Input Error", "Minimum Spend or Max Price can't be more than budget!")
 
         games = filter_games(self.data, budget, max_game_price, format_exclusions, discount_only, game_only)
         combo, total_price = random_combination(games, budget, min_spend)
 
-        self.output_frame.output_tree.delete(*self.output_frame.output_tree.get_children())
+        tree = self.output_frame.output_tree
+
+        tree.delete(*tree.get_children())
 
         for i, item in enumerate(combo):
             tag = "even" if (i + 1) % 2 == 0 else "odd"
@@ -189,10 +207,13 @@ class WishlistGeneratorUI(ctk.CTk):
                 f"{item['discount']}%",
                 item['price']
             )
-            self.output_frame.output_tree.insert('', 'end', values=values, tags=(tag,))
+            tree.insert('', 'end', values=values, tags=(tag,))
 
-        self.output_frame.output_tree.pack(fill='both', expand=True)
-        self.total_label.configure(text=f"Total: {total_price}")
+        total_height = len(tree.get_children())
+        tree.configure(height=total_height)
+
+        tree.pack(fill='both', expand=True)
+        self.total_label.configure(text=f"Total: {total_price:.2f}")
 
         # print(f"{title:<67} {f'-{discount}%':<9} {CURRENCY}{price:>10,.2f}")
         # print(f"\nGenerating random combination that can be bought within {CURRENCY} {budget} with at least {CURRENCY} {min_spend} spent:\n")
