@@ -1,4 +1,3 @@
-import os
 from utils.ui import WishlistGeneratorUI
 
 def main():
