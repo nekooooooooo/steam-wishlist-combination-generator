@@ -43,6 +43,7 @@ def get_wishlist_from_steam(input_id):
                 game_type = games['type']
                 price = games['subs'][0]['price']
                 discount = games['subs'][0]['discount_pct']
+                url = f"https://store.steampowered.com/app/{key}"
 
                 # create the new dictionary
                 game_dict = {
@@ -51,7 +52,8 @@ def get_wishlist_from_steam(input_id):
                     "type": game_type,
                     "price": price,
                     "discount": discount,
-                    "capsule": games['capsule']
+                    "capsule": games['capsule'],
+                    "url": url
                 }
 
                 # add it to the result list

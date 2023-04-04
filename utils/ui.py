@@ -1,7 +1,9 @@
 import customtkinter as ctk
+import webbrowser
 from tkinter import ttk
 from customtkinter import filedialog
 from tkinter import messagebox
+from tktooltip import ToolTip
 from utils.item_filters import filter_games
 from utils.combinations import random_combination
 from utils.wishlist_data import get_wishlist_from_steam, get_wishlist_from_file
@@ -105,22 +107,37 @@ class OutputsFrame(ctk.CTkScrollableFrame):
         self.style.layout("wishlist.Treeview", [('wishlist.Treeview.treearea', {'sticky': 'nswe'})])
         self.style.map('wishlist.Treeview', background=[('selected', '#2463AA')])
 
-        self.columns = ['appid', 'title', 'discount', 'price']
+        self.columns = ['appid', 'title', 'discount', 'price', 'url']
         self.output_tree = ttk.Treeview(self, columns=self.columns, show='tree', style="wishlist.Treeview")
         self.output_tree.tag_configure('odd', background='#212121')
         self.output_tree.tag_configure('even', background='#181818')
+        ToolTip(self.output_tree, msg="Double click to open link", delay=0.5)   # True by default
 
         # Define the columns
         self.output_tree.heading('appid', text='AppID')
         self.output_tree.heading('title', text='Title')
         self.output_tree.heading('discount', text='Discount', anchor="e")
         self.output_tree.heading('price', text='Price', anchor="e")
+        self.output_tree.heading('url', text='URL')
 
         self.output_tree.column("#0", width=0, stretch="no")
         self.output_tree.column("appid", width=75, anchor="center", stretch="no")
         self.output_tree.column("title", width=200)
         self.output_tree.column("discount", width=25, anchor="e")
         self.output_tree.column("price", width=30, anchor="e")
+        self.output_tree.column("url", width=0, stretch="no")
+        
+        self.output_tree.bind("<Double-1>", self.open_link)
+
+        
+    def open_link(self, event):
+        item = self.output_tree.focus()
+        if item:
+            name = self.output_tree.item(item)['values'][1]
+            url = self.output_tree.item(item)['values'][4]
+            answer = messagebox.askyesno("Open Link", f"Do you want to open the link in a browser?\n{name}\n{url}")
+            if answer:
+                webbrowser.open(url)
 
 
 class WishlistGeneratorUI(ctk.CTk):
@@ -211,7 +228,8 @@ class WishlistGeneratorUI(ctk.CTk):
                 item['appid'],
                 item['title'],
                 f"{item['discount']}%",
-                item['price']
+                item['price'],
+                item['url']
             )
             tree.insert('', 'end', values=values, tags=(tag,))
 

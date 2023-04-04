@@ -24,7 +24,8 @@ def filter_games(data, budget, max_game_price, exclusions, discount_only=False, 
         'appid': item['gameid'][1].lstrip('app/'),
         'title': item['title'],
         'price': get_price(item),
-        'discount': item['discount']
+        'discount': item['discount'],
+        'url': item['url']
     } for item in data['data'] if has_price(item) and
         within_budget(item, budget) and
         under_max_price(item, max_game_price) and
