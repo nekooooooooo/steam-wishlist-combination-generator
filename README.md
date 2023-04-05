@@ -51,5 +51,6 @@ CURRENCY = "<currency>"
 - [x] Support for official steam wishlist data json (26/3/2023)
     - [x] Steam URL/SteamID/Vanity Url
 - [ ] Sort
-- [ ] Executable release
+- [x] Executable release
 - [ ] CLI release
+- [ ] Web app release
