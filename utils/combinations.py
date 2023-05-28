@@ -25,7 +25,7 @@ def random_combination(games, budget, min_spend=0):
             break
 
         if i == MAX_TRIES - 1:
-            print("Error: No valid combination found.")
+            print("Error: No valid combinatio   n found.")
             break
 
     return combo, total_price
