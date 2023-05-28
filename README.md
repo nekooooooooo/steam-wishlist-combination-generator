@@ -30,7 +30,7 @@ CURRENCY = "<currency>"
 - TomSchimansky for [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter)
 - IsThereAnyDeal for Augmented Steam
 
-## To Do
+## To Do (Some planned features might be added to web version)
 - [ ] Optimize code
 - [x] GUI using Tkinter, maybe (04/04/2023)
     - [x] Clickable links (04/04/2023)
