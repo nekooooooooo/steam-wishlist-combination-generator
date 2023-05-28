@@ -30,7 +30,7 @@ CURRENCY = "<currency>"
 - TomSchimansky for [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter)
 - IsThereAnyDeal for Augmented Steam
 
-## To Do
+## To Do (Some planned features might be added to web version)
 - [ ] Optimize code
 - [x] GUI using Tkinter, maybe (04/04/2023)
     - [x] Clickable links (04/04/2023)
@@ -51,6 +51,6 @@ CURRENCY = "<currency>"
 - [x] Support for official steam wishlist data json (26/3/2023)
     - [x] Steam URL/SteamID/Vanity Url
 - [ ] Sort
-- [ ] Logging
-- [ ] Executable release
+- [x] Executable release
 - [ ] CLI release
+- [ ] Web app release

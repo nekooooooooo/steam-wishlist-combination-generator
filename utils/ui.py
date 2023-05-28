@@ -184,6 +184,7 @@ class WishlistGeneratorUI(ctk.CTk):
         appid = self.output_frame.output_tree.item(item)['values'][0]
         exclusions = self.input_frame.exclusions_entry.get().replace(" ", "").split(",")
         if str(appid) not in exclusions:
+            print(f"Added {appid} to exclusions")
             self.input_frame.exclusions_entry.insert(ctk.END, f"{appid}, ")
 
     def get_button_callback(self):
@@ -225,7 +226,9 @@ class WishlistGeneratorUI(ctk.CTk):
         if min_spend > budget or max_game_price > budget:
             return messagebox.showerror("Input Error", "Minimum Spend or Max Price can't be more than budget!")
 
+        print("Filtering wishlist based on criteria")
         games = filter_games(self.data, budget, max_game_price, format_exclusions, discount_only, game_only)
+        print("Getting combinations")
         combo, total_price = random_combination(games, budget, min_spend)
 
         if total_price < min_spend:
@@ -235,6 +238,7 @@ class WishlistGeneratorUI(ctk.CTk):
 
         tree.delete(*tree.get_children())
 
+        print("Populating table")
         for i, item in enumerate(combo):
             tag = "even" if (i + 1) % 2 == 0 else "odd"
             values = (
