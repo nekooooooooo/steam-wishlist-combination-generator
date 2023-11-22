@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import webbrowser
+from utils.constants import CURRENCY
 from tkinter import ttk
 from customtkinter import filedialog
 from tkinter import messagebox
@@ -41,10 +42,8 @@ class MethodTab(ctk.CTkTabview):
         self.steamid_entry.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
 
     def select_file(self):
-        # Open a file dialog to select a file
         filepath = filedialog.askopenfilename()
         
-        # Update the file path entry widget with the selected file path
         self.filepath_entry.delete(0, ctk.END)
         self.filepath_entry.insert(0, filepath)
 
@@ -67,21 +66,27 @@ class InputsFrame(ctk.CTkFrame):
         self.minimum_entry = ctk.CTkEntry(self, validate='all', validatecommand=(vcmd, '%P'))
         self.minimum_entry.grid(row=1, column=1, padx=10, pady=(0, 10), sticky="nsew")
 
-        self.max_price_entry = ctk.CTkLabel(self, text="Maximum Game Price")
-        self.max_price_entry.grid(row=0, column=2, padx=10, pady=0, sticky="ew")
+        self.max_price_label = ctk.CTkLabel(self, text="Maximum Game Price")
+        self.max_price_label.grid(row=0, column=2, padx=10, pady=0, sticky="ew")
         self.max_price_entry = ctk.CTkEntry(self, validate='all', validatecommand=(vcmd, '%P'))
         self.max_price_entry.grid(row=1, column=2, padx=10, pady=(0, 10), sticky="nsew")
 
         self.game_only_switch = ctk.CTkSwitch(self, text="Game only?")
-        self.game_only_switch.grid(row=2, column=0, padx=10, pady=(10, 0))
+        self.game_only_switch.grid(row=3, column=0, padx=10, pady=(10, 0))
 
         self.discount_only_switch = ctk.CTkSwitch(self, text="Discounted only?")
-        self.discount_only_switch.grid(row=2, column=1, padx=10, pady=(10, 0))
+        self.discount_only_switch.grid(row=3, column=1, padx=10, pady=(10, 0))
+
+        # self.currency_label = ctk.CTkLabel(self, text="Currency")
+        # self.currency_label.grid(row=2, column=2, padx=10, pady=0, sticky="ew")
+        # self.v = ctk.StringVar(self, value=CURRENCY)
+        # self.currency_entry = ctk.CTkEntry(self, validate='all', validatecommand=(vcmd, '%P'), textvariable=self.v)
+        # self.currency_entry.grid(row=3, column=2, padx=10, pady=(0, 10), sticky="nsew")
 
         self.exclusions_entry = ctk.CTkLabel(self, text="Exclusions", anchor="w")
-        self.exclusions_entry.grid(row=3, column=0, padx=10, pady=0, sticky="ew")
+        self.exclusions_entry.grid(row=4, column=0, padx=10, pady=0, sticky="ew")
         self.exclusions_entry = ctk.CTkEntry(self, placeholder_text="Use game app id, separate with comma")
-        self.exclusions_entry.grid(row=4, column=0, columnspan=3, padx=10, pady=(0, 10), sticky="nsew")
+        self.exclusions_entry.grid(row=5, column=0, columnspan=3, padx=10, pady=(0, 10), sticky="nsew")
     
     def callback(self, P):
         if str.isdigit(P) or P == "":

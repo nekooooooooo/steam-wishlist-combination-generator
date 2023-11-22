@@ -1,5 +1,5 @@
 import random
-from utils.constants import CURRENCY
+# from utils.constants import CURRENCY
 
 def random_combination(games, budget, min_spend=0):
     """
@@ -39,6 +39,6 @@ def print_combination(combo, total_price):
         title = item['title']
         discount = item['discount']
         price = item['price']
-        print(f"{title:<67} {f'-{discount}%':<9} {CURRENCY}{price:>10,.2f}")
+        print(f"{title:<67} {f'-{discount}%':<9} {price:>10,.2f}")
     print("-" * 97)
-    print(f"{'Total price:':<77} {CURRENCY}{total_price:>10,.2f}\n")
+    print(f"{'Total price:':<77} {total_price:>10,.2f}\n")
