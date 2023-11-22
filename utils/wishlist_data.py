@@ -5,10 +5,7 @@ from urllib.parse import urlparse
 from tqdm import tqdm
 
 def get_wishlist_url(is_vanity):
-    if is_vanity:
-        return STEAM_WISHLIST_VANITY_URL
-    else:
-        return STEAM_WISHLIST_ID_URL
+    return STEAM_WISHLIST_VANITY_URL if is_vanity else STEAM_WISHLIST_ID_URL
 
 def get_wishlist_from_file(file):
     print("Getting wishlist.json")
