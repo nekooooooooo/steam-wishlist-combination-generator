@@ -5,3 +5,4 @@ testcode.py
 __pycache__
 old.py
 utils/testing.py
+output/
