@@ -232,7 +232,7 @@ class WishlistGeneratorUI(ctk.CTk):
             return messagebox.showerror("Input Error", "Minimum Spend or Max Price can't be more than budget!")
 
         print("Filtering wishlist based on criteria")
-        games = filter_games(self.data, budget, max_game_price, format_exclusions, discount_only, game_only)
+        games = filter_games(self.data, budget=budget, max_game_price=max_game_price, exclusions=format_exclusions, discount_only=discount_only, game_only=game_only)
         print("Getting combinations")
         combo, total_price = random_combination(games, budget, min_spend)
 
