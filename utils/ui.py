@@ -246,10 +246,12 @@ class WishlistGeneratorUI(ctk.CTk):
         print("Populating table")
         for i, item in enumerate(combo):
             tag = "even" if (i + 1) % 2 == 0 else "odd"
+
+            discount = f"{item['discount']}%" if item['discount'] else 'No Discount'
             values = (
                 item['appid'],
                 item['title'],
-                f"{item['discount']}%",
+                discount,
                 item['price'],
                 item['url']
             )
