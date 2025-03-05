@@ -19,8 +19,8 @@ class MethodTab(ctk.CTkTabview):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.add("SteamID")
         self.add("File")
+        self.add("SteamID")
         self.tab("File").grid_columnconfigure((0, 2), weight=0)
         self.tab("File").grid_columnconfigure(1, weight=1)
         self.tab("SteamID").grid_columnconfigure((0, 2), weight=0)
@@ -40,6 +40,8 @@ class MethodTab(ctk.CTkTabview):
 
         self.steamid_entry = ctk.CTkEntry(self.tab("SteamID"), placeholder_text="SteamID32, URL, or Custom URL")
         self.steamid_entry.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.delete("SteamID") # Hide SteamID tab for now
 
     def select_file(self):
         filepath = filedialog.askopenfilename()
