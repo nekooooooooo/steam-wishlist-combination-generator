@@ -6,6 +6,13 @@ A simple, unoptimized python script that helps me decide which games to buy from
 
 ![](https://raw.githubusercontent.com/nekooooooooo/nekooooooooo.github.io/master/pics/preview_steam_wishlist_3.png)
 
+> ⚠ **Notice**  
+> As of **November 2024**, grabbing wishlist data from the following URLs no longer works:  
+> - `https://store.steampowered.com/wishlist/profiles/{}/wishlistdata?p={}`  
+> - `https://store.steampowered.com/wishlist/id/{}/wishlistdata?p={}`  
+>
+> Steam has likely changed their wishlist API, and an alternative method may be required.
+
 This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/AugmentedSteam) wishlist export to json function.
 
 ## Setup and Usage
@@ -16,7 +23,7 @@ This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/Augmented
 Optionally
 - Install [Augmented Steam](https://augmentedsteam.com/)
 
-[![Chrome download link](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png)](https://chrome.google.com/webstore/detail/augmented-steam/dnhpnfgdlenaccegplpojghhmaamnnfp) [![Firefox download link](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/augmented-steam/)
+[![Chrome download link](https://developer.chrome.com/static/docs/webstore/branding/image/tbyBjqi7Zu733AAKA5n4.png)](https://chrome.google.com/webstore/detail/augmented-steam/dnhpnfgdlenaccegplpojghhmaamnnfp) [![Firefox download link](https://extensionworkshop.com/assets/img/documentation/publish/get-the-addon-178x60px.dad84b42.png)](https://addons.mozilla.org/firefox/addon/augmented-steam/)
 - Export your wishlist to a json file named `wishlist.json`
 
 ## Optional variables:
