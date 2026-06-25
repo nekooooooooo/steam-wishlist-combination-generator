@@ -7,14 +7,11 @@ A simple, unoptimized python script that helps me decide which games to buy from
 ![Steam Wishlist Preview](https://raw.githubusercontent.com/nekooooooooo/nekooooooooo.github.io/master/pics/preview_steam_wishlist_3.png)
 
 > ⚠ **Notice**  
-> As of **November 2024**, grabbing wishlist data from the following URLs no longer works:  
->
-> - `https://store.steampowered.com/wishlist/profiles/{}/wishlistdata?p={}`  
-> - `https://store.steampowered.com/wishlist/id/{}/wishlistdata?p={}`  
->
-> Steam has likely changed their wishlist API, and an alternative method may be required.
+> As of **November 2024**, the old wishlist API endpoints stopped working.  
+> The script now uses the official Steam Web API (`IWishlistService/GetWishlist/v1`)  
+> to fetch wishlist data via SteamID.
 
-This script uses [Augmented Steam's](https://github.com/IsThereAnyDeal/AugmentedSteam) wishlist export to json function.
+This script can fetch wishlist data using either a json file from [Augmented Steam](https://github.com/IsThereAnyDeal/AugmentedSteam) or directly from Steam's API by entering a SteamID64.
 
 ## Setup and Usage
 
@@ -32,11 +29,13 @@ Optionally
 
 ## Optional Variables
 
-Optionally, change currency inside the utils/constants.py, line 3 `CURRENCY = "<currency>"`, currently it's in my currency but it should work still
+Change the pricing region inside `utils/constants.py`:
 
 ```py
-CURRENCY = "<currency>"
+COUNTRY_CODE = "ph"  # two-letter country code for Steam pricing
 ```
+
+A cache of fetched app details is stored in `appdetails_cache.json` (1-hour TTL) to reduce API calls. Delete this file to force a fresh fetch.
 
 ## Credits
 
