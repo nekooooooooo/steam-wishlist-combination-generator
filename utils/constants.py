@@ -1,3 +1,6 @@
 STEAM_WISHLIST_VANITY_URL = "https://store.steampowered.com/wishlist/id/{}/wishlistdata?p={}"
 STEAM_WISHLIST_ID_URL = "https://store.steampowered.com/wishlist/profiles/{}/wishlistdata?p={}"
+STEAM_WISHLIST_API_URL = "https://api.steampowered.com/IWishlistService/GetWishlist/v1/"
+STEAM_APPDETAILS_API_URL = "https://store.steampowered.com/api/appdetails"
+COUNTRY_CODE = "ph"
 CURRENCY = ""

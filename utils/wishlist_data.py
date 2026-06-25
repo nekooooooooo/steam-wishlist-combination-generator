@@ -1,11 +1,55 @@
-from utils.constants import STEAM_WISHLIST_VANITY_URL, STEAM_WISHLIST_ID_URL
+from utils.constants import STEAM_WISHLIST_API_URL, STEAM_APPDETAILS_API_URL, COUNTRY_CODE
 import json
 import requests
 from urllib.parse import urlparse
 from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+import random
+import os
 
-def get_wishlist_url(is_vanity):
-    return STEAM_WISHLIST_VANITY_URL if is_vanity else STEAM_WISHLIST_ID_URL
+type_map = {
+    "game": "Game",
+    "dlc": "DLC",
+    "demo": "Demo",
+    "music": "Music",
+    "movie": "Video",
+    "video": "Video",
+    "series": "Series",
+    "mod": "Mod",
+    "advertising": "Advertising",
+    "hardware": "Hardware",
+    "software": "Software",
+}
+
+_session = requests.Session()
+_session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+})
+
+_cache_file = "appdetails_cache.json"
+_cache_ttl = 3600
+_cache = {}
+
+def _load_cache():
+    global _cache
+    if os.path.exists(_cache_file):
+        try:
+            with open(_cache_file, 'r', encoding="utf-8") as f:
+                _cache = json.load(f)
+        except:
+            _cache = {}
+    else:
+        _cache = {}
+
+def _save_cache():
+    try:
+        with open(_cache_file, 'w', encoding="utf-8") as f:
+            json.dump(_cache, f, indent=2)
+    except:
+        pass
+
+_load_cache()
 
 def get_wishlist_from_file(file):
     print("Getting wishlist.json")
@@ -14,54 +58,87 @@ def get_wishlist_from_file(file):
         data = json.load(f)
         return data
 
+def fetch_app_details(appid):
+    now = time.time()
+    cached = _cache.get(str(appid))
+    if cached and now - cached.get("timestamp", 0) < _cache_ttl:
+        return cached["data"]
+
+    for attempt in range(3):
+        try:
+            r = _session.get(
+                STEAM_APPDETAILS_API_URL,
+                params={"appids": appid, "cc": COUNTRY_CODE},
+                timeout=10
+            )
+            if not r.ok:
+                time.sleep(1 * (attempt + 1) + random.random())
+                continue
+
+            resp = r.json().get(str(appid), {})
+            if not resp.get("success"):
+                _cache[str(appid)] = {"data": None, "timestamp": now}
+                _save_cache()
+                return None
+
+            data = resp["data"]
+            if data.get("is_free"):
+                _cache[str(appid)] = {"data": None, "timestamp": now}
+                _save_cache()
+                return None
+            price = data.get("price_overview")
+            if not price:
+                _cache[str(appid)] = {"data": None, "timestamp": now}
+                _save_cache()
+                return None
+
+            game_type = type_map.get(data.get("type", ""), data.get("type", "").title())
+
+            game_dict = {
+                "gameid": ["steam", f"app/{appid}"],
+                "title": data["name"],
+                "type": game_type,
+                "price": price["final"],
+                "discount": price["discount_percent"],
+                "capsule": data.get("header_image", ""),
+                "url": f"https://store.steampowered.com/app/{appid}",
+                "tags": [g["description"] for g in data.get("genres", [])]
+            }
+
+            _cache[str(appid)] = {"data": game_dict, "timestamp": now}
+            _save_cache()
+            return game_dict
+
+        except requests.RequestException:
+            if attempt < 2:
+                time.sleep(1 * (attempt + 1) + random.random())
+                continue
+            return None
+        except Exception:
+            return None
+    return None
+
 def get_wishlist_from_steam(input_id):
-    # Extract id from input
-    steam_id, is_vanity = get_id(input_id)
+    steam_id, _ = get_id(input_id)
 
-    # Send GET request to Steam wishlist URL and get response content
-    wishlist_url = get_wishlist_url(is_vanity)
-    
-    # Get the first page of the wishlist data
+    r = requests.get(STEAM_WISHLIST_API_URL, params={"steamid": steam_id}, timeout=15,
+                     headers={"User-Agent": _session.headers["User-Agent"]})
+    data = r.json()
+    items = data.get("response", {}).get("items", [])
+    if not items:
+        return {"data": []}
+
+    appids = [item["appid"] for item in items]
+
     result = []
-    page_num = 0
-    while True:
-        response = requests.get(wishlist_url.format(steam_id, page_num))
-        data = json.loads(response.content)
-
-        # Check if data is empty list
-        if len(data) == 0 or data.get('success') == 2:
-            break
-        
-        for key, games in tqdm(data.items(), desc=f"Extracting wishlist data page {page_num + 1}"):
-            if games['subs']:
-                # extract relevant data from the game data
-                app_id = f"app/{key}"
-                title = games['name'].replace("'", "\'")
-                game_type = games['type']
-                price = games['subs'][0]['price']
-                discount = games['subs'][0]['discount_pct']
-                url = f"https://store.steampowered.com/app/{key}"
-                tags = games['tags']
-
-                # create the new dictionary
-                game_dict = {
-                    "gameid": ["steam", app_id],
-                    "title": title,
-                    "type": game_type,
-                    "price": price,
-                    "discount": discount,
-                    "capsule": games['capsule'],
-                    "url": url,
-                    "tags": tags
-                }
-
-                # add it to the result list
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {executor.submit(fetch_app_details, appid): appid for appid in appids}
+        for future in tqdm(as_completed(futures), total=len(appids), desc="Fetching game details"):
+            game_dict = future.result()
+            if game_dict:
                 result.append(game_dict)
 
-        page_num += 1
-
-    wishlist = {"data": result}
-    return wishlist
+    return {"data": result}
 
 def get_id(input_id):
     if "https://steamcommunity.com" in input_id:

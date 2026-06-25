@@ -36,12 +36,10 @@ class MethodTab(ctk.CTkTabview):
         self.file_button.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
 
         self.steamid_label = ctk.CTkLabel(self.tab("SteamID"), text="SteamID:")
-        self.steamid_label.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+        self.steamid_label.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
         self.steamid_entry = ctk.CTkEntry(self.tab("SteamID"), placeholder_text="SteamID32, URL, or Custom URL")
-        self.steamid_entry.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
-
-        self.delete("SteamID") # Hide SteamID tab for now
+        self.steamid_entry.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
     def select_file(self):
         filepath = filedialog.askopenfilename()
@@ -222,13 +220,9 @@ class WishlistGeneratorUI(ctk.CTk):
         if not budget:
             return messagebox.showerror("Input Error", "Budget can't be empty!")
 
-        if not min_spend:
-            return messagebox.showerror("Input Error", "Minimum Spend can't be empty!")
-
-        if not max_game_price:
-            return messagebox.showerror("Input Error", "Max Price can't be empty!")
-
-        budget, min_spend, max_game_price = map(int, [budget, min_spend, max_game_price])
+        budget = int(budget)
+        min_spend = int(min_spend) if min_spend else 0
+        max_game_price = int(max_game_price) if max_game_price else budget
 
         if min_spend > budget or max_game_price > budget:
             return messagebox.showerror("Input Error", "Minimum Spend or Max Price can't be more than budget!")
